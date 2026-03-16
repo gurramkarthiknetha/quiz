@@ -651,8 +651,3 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - [Cloudinary](https://cloudinary.com/) for file storage
 - [MongoDB Atlas](https://www.mongodb.com/atlas) for database hosting
 
----
-
-<p align="center">
-  Built with ❤️ using the MERN Stack + OpenAI
-</p>
