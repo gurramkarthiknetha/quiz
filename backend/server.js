@@ -34,6 +34,9 @@ const { notFound, errorHandler, apiLimiter } = require("./middleware");
 // Initialize express app
 const app = express();
 
+// Trust first proxy (Render/Cloudflare) so secure cookies work correctly in production
+app.set("trust proxy", 1);
+
 // Connect to MongoDB
 connectDB();
 
@@ -42,9 +45,20 @@ app.use(helmet()); // Set security HTTP headers
 app.use(mongoSanitize()); // Sanitize data to prevent NoSQL injection
 
 // CORS Configuration
+const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -66,6 +80,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
