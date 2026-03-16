@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQuiz } from "@/context/QuizContext";
 import { toast } from "sonner";
 
-const SERVER_URI = import.meta.env.VITE_SERVER_URI || "http://localhost:3000";
+const SERVER_URI = import.meta.env.VITE_SERVER_URI || "http://localhost:6221";
 
 export function FileUpload() {
   const { inputText, setInputText } = useQuiz();
